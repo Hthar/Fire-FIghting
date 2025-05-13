@@ -1,6 +1,6 @@
 import math
-from Gusbots import SpeedEstimator
-from Gusbots.controller import GoToGo
+from gusbots import SpeedEstimator
+from gusbots.controller import GoToGo
 
 
 class Inputs:

@@ -8,12 +8,12 @@ import RPi.GPIO as GPIO
 from gusbots import encoder, localization, stateControl
 
 # L298N Motor Driver Pins
-ENA = 17  # PWM pin for left motor speed
-IN1 = 27  # Direction pin 1 for left motor
-IN2 = 22  # Direction pin 2 for left motor
-ENB = 23  # PWM pin for right motor speed
-IN3 = 24  # Direction pin 1 for right motor
-IN4 = 25  # Direction pin 2 for right motor
+ENA = 12  # PWM pin for left motor speed
+IN1 = 22  # Direction pin 1 for left motor
+IN2 = 23  # Direction pin 2 for left motor
+ENB = 13  # PWM pin for right motor speed
+IN3 = 17  # Direction pin 1 for right motor
+IN4 = 27  # Direction pin 2 for right motor
 
 # Initialize GPIO
 GPIO.setmode(GPIO.BCM)
@@ -59,8 +59,8 @@ wheel_radius = 0.0335
 wheel_base = 0.222
 
 # Initialize the encoder. Both have 40 ticks per resolution.
-left_wheel_encoder = encoder.encoder(5, 40, wheel_radius)
-right_wheel_encoder = encoder.encoder(12, 40, wheel_radius)
+left_wheel_encoder = encoder.encoder(24, 11, wheel_radius)
+right_wheel_encoder = encoder.encoder(25, 11, wheel_radius)
 
 odo = localization.odometry(left_wheel_encoder, right_wheel_encoder, wheel_base)
 stControl = stateControl.stateControl()
