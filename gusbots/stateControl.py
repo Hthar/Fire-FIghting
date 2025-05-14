@@ -114,8 +114,16 @@ class GoToGoalSt(State):
         right_limited = self.rateLimit(right_norm, self.rightPrevCmd, 0.1, -0.1)
 
         # Apply minimum speed and direction
-        left_final = max(0.5, abs(left_limited)) * (1 if left_limited >= 0 else -1)
-        right_final = max(0.5, abs(right_limited)) * (1 if right_limited >= 0 else -1)
+        left_final = (
+            max(0.2, abs(left_limited)) * (1 if left_limited >= 0 else -1)
+            if abs(left) > 0
+            else 0
+        )
+        right_final = (
+            max(0.2, abs(right_limited)) * (1 if right_limited >= 0 else -1)
+            if abs(right) > 0
+            else 0
+        )
 
         self.leftPrevCmd = left_final
         self.rightPrevCmd = right_final

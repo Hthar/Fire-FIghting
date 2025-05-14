@@ -8,12 +8,13 @@ import RPi.GPIO as GPIO
 from gusbots import encoder, localization, stateControl
 
 # L298N Motor Driver Pins
-ENA = 12  # PWM pin for left motor speed
-IN1 = 22  # Direction pin 1 for left motor
-IN2 = 23  # Direction pin 2 for left motor
-ENB = 13  # PWM pin for right motor speed
-IN3 = 17  # Direction pin 1 for right motor
-IN4 = 27  # Direction pin 2 for right motor
+# L298N Motor Driver Pins (Right motor: IN1/IN2/ENA, Left motor: IN3/IN4/ENB)
+ENA = 12  # PWM for RIGHT motor
+IN1 = 22  # Right motor direction 1
+IN2 = 23  # Right motor direction2
+ENB = 13  # PWM for LEFT motor
+IN3 = 17  # Left motor direction 1
+IN4 = 27  # Left motor direction 2
 
 # Initialize GPIO
 GPIO.setmode(GPIO.BCM)
@@ -24,31 +25,40 @@ GPIO.setup(ENB, GPIO.OUT)
 GPIO.setup(IN3, GPIO.OUT)
 GPIO.setup(IN4, GPIO.OUT)
 
-# Create PWM instances
-left_pwm = GPIO.PWM(ENA, 1000)  # 1000Hz frequency
-right_pwm = GPIO.PWM(ENB, 1000)
-left_pwm.start(0)
+# Create PWM instances (2000Hz for better low-speed control)
+right_pwm = GPIO.PWM(ENA, 2000)
+left_pwm = GPIO.PWM(ENB, 2000)
 right_pwm.start(0)
+left_pwm.start(0)
 
 
-def set_motor_speeds(left, right):  ## Get ftom state control  motor speed output
-    # Left motor
-    if left >= 0:
+def set_motor_speeds(left, right):
+    # RIGHT motor control (IN1/IN2/ENA)
+    if right > 0:
         GPIO.output(IN1, GPIO.HIGH)
         GPIO.output(IN2, GPIO.LOW)
-    else:
+    elif right < 0:
         GPIO.output(IN1, GPIO.LOW)
         GPIO.output(IN2, GPIO.HIGH)
-    left_pwm.ChangeDutyCycle(min(abs(left) * 100, 100))
+    else:
+        GPIO.output(IN1, GPIO.LOW)
+        GPIO.output(IN2, GPIO.LOW)
+    right_pwm.ChangeDutyCycle(min(abs(right) * 100, 100))
 
-    # Right motor
-    if right >= 0:
+    # LEFT motor control (IN3/IN4/ENB)
+    if left > 0:
         GPIO.output(IN3, GPIO.HIGH)
         GPIO.output(IN4, GPIO.LOW)
-    else:
+    elif left < 0:
         GPIO.output(IN3, GPIO.LOW)
         GPIO.output(IN4, GPIO.HIGH)
-    right_pwm.ChangeDutyCycle(min(abs(right) * 100, 100))
+    else:
+        GPIO.output(IN3, GPIO.LOW)
+        GPIO.output(IN4, GPIO.LOW)
+    left_pwm.ChangeDutyCycle(
+        min(abs(left) * 100, 100)
+    )  ## Get ftom state control  motor speed output
+    # Left motor
 
 
 # Used to manage how fast the main loop runs
